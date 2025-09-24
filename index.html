@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulado de Direito Tributário</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .simulado-container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+    }
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .question-box {
+      background-color: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e5e7eb;
+    }
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+    .options-container button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      background-color: #e5e7eb;
+      color: #374151;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-bottom: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+    .options-container button:hover:not(:disabled) {
+      background-color: #d1d5db;
+    }
+    .options-container button.selected {
+      font-weight: bold;
+    }
+    .options-container button.correct {
+      background-color: #d1fae5;
+      color: #065f46;
+      font-weight: bold;
+    }
+    .options-container button.incorrect {
+      background-color: #fee2e2;
+      color: #991b1b;
+      font-weight: bold;
+    }
+    .feedback-box {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      background-color: #f0fdf4;
+      border: 1px solid #d1fae5;
+      color: #065f46;
+      display: none;
+    }
+    .feedback-box.incorrect {
+      background-color: #fef2f2;
+      border-color: #fee2e2;
+      color: #991b1b;
+    }
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+    .navigation-buttons button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      background-color: #4f46e5;
+      color: white;
+      transition: background-color 0.2s ease;
+    }
+    .navigation-buttons button:hover:not(:disabled) {
+      background-color: #4338ca;
+    }
+    .navigation-buttons button:disabled {
+      background-color: #a0a0a0;
+      cursor: not-allowed;
+    }
+    .final-result {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .final-result-text {
+      margin-bottom: 1rem;
+    }
+    #restart-button {
+      background-color: #10b981;
+      color: white;
+    }
+    #restart-button:hover {
+      background-color: #059669;
+    }
+  </style>
+</head>
+<body>
+
+<div class="simulado-container">
+  <div class="header-info">
+    <span id="progress-text" class="text-sm text-gray-500">Questão 1 de 60</span>
+    <span id="status-text" class="text-sm text-gray-500"></span>
+  </div>
+
+  <div id="quiz-content">
+    <div class="question-box">
+      <div id="question-text" class="question-text"></div>
+      <div id="options-container" class="options-container"></div>
+    </div>
+    <div id="feedback-box" class="feedback-box">
+      <div id="feedback-text"></div>
+    </div>
+  </div>
+
+  <div id="final-result" class="final-result hidden">
+    <div id="final-result-text" class="final-result-text"></div>
+    <button id="restart-button" class="px-6 py-3 rounded-lg shadow-md transition-all">Reiniciar Simulado</button>
+  </div>
+
+  <div class="navigation-buttons">
+    <button id="prev-button" disabled>Voltar</button>
+    <button id="next-button">Avançar</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    { question: "De acordo com o Art. 3º do CTN, tributo é toda prestação pecuniária compulsória, em moeda ou cujo valor nela se possa exprimir, que não constitua sanção por ato ilícito. Qual dos itens a seguir NÃO se enquadra nessa definição?", options: ["Multa de trânsito.", "Imposto de Renda.", "Taxa de coleta de lixo.", "Contribuição de Iluminação Pública."], answer: 0, feedback: "A multa de trânsito é uma sanção por ato ilícito (infração), não sendo, portanto, um tributo, conforme a definição legal no Art. 3º do CTN." },
+    { question: "Qual dos princípios constitucionais tributários garante que a cobrança de um tributo só pode ocorrer a partir de uma lei que o crie ou o majore, respeitando um período de tempo para entrar em vigor?", options: ["Princípio da Legalidade.", "Princípio da Irretroatividade.", "Princípio da Anterioridade.", "Princípio da Capacidade Contributiva."], answer: 2, feedback: "O **Princípio da Anterioridade** (Art. 150, III, 'b' da CF/88) determina que um tributo não pode ser cobrado no mesmo exercício financeiro em que a lei que o instituiu ou aumentou foi publicada. Já a **Irretroatividade** (Art. 150, III, 'a' da CF/88) impede a cobrança de tributo sobre fatos geradores ocorridos antes da lei que o criou." },
+    { question: "A cobrança de IPTU, de IPVA e do Imposto de Renda é um exemplo de tributo classificado como:", options: ["Vinculado a uma atividade estatal específica.", "Não vinculado a uma atividade estatal específica.", "Contribuição de melhoria.", "Taxa de serviço."], answer: 1, feedback: "Impostos são tributos não vinculados a uma atividade estatal específica relativa ao contribuinte. Eles financiam serviços públicos gerais, como segurança, saúde e educação. Em contraste, taxas e contribuições de melhoria são tributos vinculados, pois têm como fato gerador uma atuação estatal direta e específica." },
+    { question: "O princípio da Irretroatividade (Art. 150, III, 'a' da CF/88) garante a segurança jurídica do contribuinte. O que ele proíbe?", options: ["A cobrança de tributos no mesmo ano em que a lei foi publicada.", "A instituição de tributos sem lei que os defina.", "A cobrança de tributos sobre fatos geradores anteriores à lei que os instituiu ou majorou.", "A cobrança de tributos sem a publicação oficial da lei."], answer: 2, feedback: "O princípio da **Irretroatividade** proíbe que se cobrem tributos sobre fatos geradores ocorridos antes do início da vigência da lei que os instituiu ou aumentou. Isso protege o contribuinte de ser surpreendido por uma cobrança retroativa." },
+    { question: "Qual é a principal distinção entre Imposto e Taxa, de acordo com o Sistema Constitucional Tributário brasileiro?", options: ["O imposto é federal e a taxa é municipal.", "O imposto pode ser instituído por medida provisória e a taxa não.", "O imposto não tem destinação específica e a taxa é vinculada a uma atividade estatal específica.", "O imposto é de competência exclusiva da União e a taxa é de competência comum."], answer: 2, feedback: "A principal diferença reside no fato gerador. O **imposto** é um tributo não vinculado, ou seja, seu fato gerador é uma situação que independe de qualquer atividade estatal específica em relação ao contribuinte (ex: ter renda, possuir um carro). A **taxa**, por sua vez, é um tributo vinculado a uma atividade estatal específica, como o exercício do poder de polícia ou a prestação de um serviço público." },
+    { question: "O Imposto de Renda, de acordo com a sua natureza e a sua regra de incidência, é um tributo do tipo:", options: ["Imposto não cumulativo.", "Imposto residual.", "Imposto pessoal.", "Imposto com caráter extrafiscal."], answer: 2, feedback: "Conforme suas anotações, o Imposto de Renda tem caráter **pessoal** e se baseia na capacidade contributiva do indivíduo (Art. 145, §1º da CF/88). Sua alíquota varia conforme a renda de cada contribuinte." },
+    { question: "A imunidade tributária é uma limitação constitucional ao poder de tributar. O que ela representa?", options: ["A isenção concedida a um contribuinte por lei ordinária.", "Uma forma de não tributar certas entidades ou situações, prevista na própria Constituição.", "A suspensão da exigibilidade do crédito tributário.", "A possibilidade de um tributo ser pago em parcelas."], answer: 1, feedback: "A **imunidade** é uma vedação constitucional ao poder de tributar, que impede a criação de tributos sobre determinadas pessoas, bens ou fatos. Diferentemente da isenção, que é uma dispensa legal, a imunidade é uma garantia prevista diretamente na Constituição Federal." },
+    { question: "De acordo com o Art. 148 da CF/88, qual tipo de tributo pode ser instituído pela União em casos de calamidade pública ou guerra, com caráter de urgência?", options: ["Impostos extraordinários.", "Contribuições especiais.", "Empréstimos compulsórios.", "Contribuições de melhoria."], answer: 2, feedback: "Os **empréstimos compulsórios** (Art. 148, CF/88) são tributos especiais de competência exclusiva da União, que podem ser instituídos em situações excepcionais, como calamidade pública, guerra externa ou para investimentos públicos de caráter urgente e relevante interesse nacional." },
+    { question: "Qual dos seguintes tributos está sujeito ao princípio da noventena (90 dias) para entrar em vigor após a publicação da lei que o instituiu ou aumentou?", options: ["Imposto de Importação (II).", "Imposto sobre Produtos Industrializados (IPI).", "Imposto de Renda (IR).", "Empréstimo compulsório para guerra externa."], answer: 2, feedback: "O Imposto de Renda, como a maioria dos tributos, deve respeitar a **noventena** (Art. 150, III, 'c' da CF/88). As exceções, como o II, o IPI e os empréstimos compulsórios de guerra, podem ser cobrados imediatamente após a publicação da lei." },
+    { question: "A competência tributária para criar, modificar e extinguir tributos é uma prerrogativa:", options: ["Exclusiva dos municípios.", "Concorrente entre a União e os estados.", "Atribuída aos entes federativos pela Constituição Federal.", "Atribuída pelo Código Tributário Nacional (CTN)."], answer: 2, feedback: "A **competência tributária** é a capacidade de instituir tributos, e é distribuída pela Constituição Federal (CF/88) entre os entes federativos (União, Estados, DF e Municípios). Isso é um dos pilares do Sistema Constitucional Tributário brasileiro." },
+    { question: "O que diferencia uma receita derivada de uma receita originária?", options: ["A receita derivada é obtida com base em um contrato e a originária não.", "A receita derivada é obtida pelo poder de império do Estado (coerção), e a originária, pela exploração do patrimônio do Estado.", "A receita derivada é obtida por meio de sanção e a originária, por meio de tributo.", "A receita derivada é de competência federal e a originária, municipal."], answer: 1, feedback: "A receita **derivada** é obtida pelo Estado através do seu poder de império, ou seja, de forma coercitiva (ex: tributos e multas). A receita **originária** é obtida pela exploração do seu próprio patrimônio ou atividades econômicas (ex: aluguel de imóveis públicos, tarifas)." },
+    { question: "A questão da prova sobre a 'taxa de serviços odontológicos' (primeira imagem) descreve uma situação em que o município criou um tributo para financiar um serviço específico. Qual seria a principal objeção de validade jurídica a esse tributo?", options: ["Não existe taxa para serviços odontológicos, apenas para coleta de lixo.", "A taxa deve ser vinculada a um serviço que a lei defina como essencial, e não a um serviço odontológico.", "A taxa só pode ser cobrada por serviços indivisíveis, e este serviço é divisível.", "Não se pode criar uma taxa para um serviço de saúde, pois este deve ser financiado por impostos gerais."], answer: 3, feedback: "De acordo com o STF, serviços como saúde, segurança pública e educação são **serviços públicos universais e indivisíveis**, que beneficiam a sociedade como um todo. Por isso, devem ser financiados por **impostos**, que têm caráter não vinculado. A criação de uma taxa específica para esses serviços é considerada inconstitucional, pois viola o caráter não vinculado do financiamento." },
+    { question: "Em relação ao Princípio da Legalidade Tributária, qual a sua essência?", options: ["Proíbe a cobrança de tributo sem lei prévia que o defina.", "Permite que o poder executivo crie tributos por meio de decretos.", "Exige que a lei tributária seja publicada com 90 dias de antecedência.", "Garante a retroatividade da lei tributária, desde que para beneficiar o contribuinte."], answer: 0, feedback: "O **Princípio da Legalidade** (Art. 150, I da CF/88) é o mais básico do direito tributário e exige que nenhum tributo pode ser instituído ou aumentado sem que haja uma lei que o estabeleça. É a garantia de que não haverá 'surpresa' na cobrança de tributos." },
+    { question: "Qual dos seguintes tributos é considerado de competência residual da União, ou seja, pode ser criado sobre fatos geradores e bases de cálculo não previstos na Constituição?", options: ["Imposto sobre Grandes Fortunas (IGF).", "Imposto sobre Transmissão Causa Mortis e Doação (ITCMD).", "Imposto sobre Operações Financeiras (IOF).", "Nenhum dos anteriores, pois apenas Impostos sobre a Renda são residuais."], answer: 3, feedback: "A competência residual da União (Art. 154, I da CF/88) se refere apenas a impostos que não sejam de competência dos estados, municípios ou já previstos para a União. As opções apresentadas são impostos já previstos na Constituição (IGF, ITCMD e IOF), portanto, não se enquadram na categoria de 'residuais'." },
+    { question: "As contribuições especiais (sociais ou parafiscais), como as contribuições para o INSS, têm como principal característica:", options: ["Possuem destinação específica e são vinculadas a uma finalidade social ou de intervenção no domínio econômico.", "São criadas apenas por lei complementar e não podem ser cobradas de empresas.", "São tributos de competência exclusiva dos estados.", "Não se aplicam a elas os princípios da anterioridade e da noventena."], answer: 0, feedback: "As **contribuições especiais** (Art. 149, CF/88) são tributos que têm uma destinação específica e um propósito definido, como financiar a seguridade social (INSS) ou a intervenção no domínio econômico (CIDE). Essa destinação é o que as diferencia de outros tributos." },
+    { question: "Segundo o princípio da seletividade, utilizado para o IPI e ICMS, qual é a principal característica da alíquota tributária?", options: ["É a mesma para todos os produtos.", "Varia em função da essencialidade do produto.", "É fixa e não pode ser alterada.", "Varia conforme a capacidade do contribuinte."], answer: 1, feedback: "O **princípio da seletividade** permite que a alíquota do IPI e ICMS seja diferenciada de acordo com a essencialidade do produto. Produtos mais essenciais (como alimentos) têm alíquotas menores, enquanto os supérfluos (como cigarros) têm alíquotas maiores, visando justiça fiscal." },
+    { question: "O princípio da Uniformidade Geográfica (Art. 151, I, da CF/88) proíbe a União de instituir tributos que sejam desiguais entre:", options: ["Os municípios de diferentes estados.", "As diferentes regiões do país.", "Os estados-membros, o Distrito Federal e os municípios.", "As regiões de fronteira e o restante do país."], answer: 2, feedback: "O **princípio da Uniformidade Geográfica** proíbe a União de criar tributos que tratem de forma desigual os Estados, o Distrito Federal e os Municípios. Ele visa garantir a equidade federativa, impedindo a criação de 'favores' fiscais para certas localidades." },
+    { question: "A Constituição Federal veda a cobrança de tributos sobre o patrimônio, a renda ou os serviços uns dos outros entre os entes federativos. Esse é o princípio da:", options: ["Não-cumulatividade.", "Imunidade Recíproca.", "Irretroatividade.", "Seletividade."], answer: 1, feedback: "A **imunidade recíproca** é uma forma de imunidade tributária que impede que a União, os Estados, o Distrito Federal e os Municípios cobrem tributos uns dos outros, preservando o pacto federativo." },
+    { question: "A criação de um novo imposto por um estado sobre um fato gerador já tributado pela União é vedada pelo princípio da:", options: ["Legalidade.", "Anterioridade.", "Não-cumulatividade.", "Vedação à bitributação."], answer: 3, feedback: "A Constituição Federal, ao distribuir as competências tributárias, evita a **bitributação**, ou seja, que dois entes federativos diferentes cobrem tributos sobre o mesmo fato gerador. Este é um princípio implícito do sistema tributário." },
+    { question: "Qual dos seguintes tributos pode ter sua alíquota alterada por decreto do Poder Executivo, sem necessidade de lei, como uma exceção ao Princípio da Legalidade?", options: ["Imposto sobre a Renda (IR).", "Imposto sobre Produtos Industrializados (IPI).", "Imposto sobre a Propriedade Predial e Territorial Urbana (IPTU).", "Imposto sobre a Transmissão Causa Mortis e Doação (ITCMD)."], answer: 1, feedback: "O **Imposto sobre Produtos Industrializados (IPI)** é uma exceção ao princípio da legalidade, pois sua alíquota pode ser alterada pelo Poder Executivo por meio de decreto, com o objetivo de regular a economia (caráter extrafiscal)." },
+    { question: "Em um cenário de guerra externa, a União pode instituir qual tipo de tributo, mesmo que não respeite o princípio da anterioridade?", options: ["Imposto de Importação.", "Imposto Extraordinário de Guerra.", "Empréstimo Compulsório.", "Contribuição de Melhoria."], answer: 1, feedback: "O **Imposto Extraordinário de Guerra** é um tributo de competência da União, que pode ser instituído em caso de guerra externa ou sua iminência, e não precisa obedecer ao princípio da anterioridade, podendo ser cobrado imediatamente." },
+    { question: "De acordo com o CTN, o que distingue o Imposto da Taxa?", options: ["A destinação do produto arrecadado.", "O fato gerador do tributo.", "A competência para a sua instituição.", "A forma de lançamento."], answer: 1, feedback: "O **fato gerador** é o elemento que diferencia o Imposto da Taxa. O imposto é gerado por uma situação independente da atividade estatal, enquanto a taxa é gerada por uma atividade estatal específica (serviço público ou poder de polícia)." },
+    { question: "A imunidade de impostos sobre livros, jornais e periódicos e o papel destinado à sua impressão (Art. 150, VI, 'd', da CF/88) visa proteger qual direito fundamental?", options: ["O direito à propriedade.", "A liberdade de expressão e de informação.", "O direito à saúde.", "A livre concorrência."], answer: 1, feedback: "A imunidade tributária sobre livros, jornais e periódicos é uma forma de garantir a **liberdade de expressão, informação e a livre circulação de ideias**, tornando-os mais acessíveis à população." },
+    { question: "Qual dos seguintes impostos, por ter caráter extrafiscal, NÃO precisa respeitar o princípio da noventena?", options: ["Imposto sobre a Propriedade Rural (ITR).", "Imposto de Exportação (IE).", "Imposto de Renda (IR).", "Imposto sobre Circulação de Mercadorias e Serviços (ICMS)."], answer: 1, feedback: "O **Imposto de Exportação (IE)** tem caráter extrafiscal, ou seja, seu objetivo principal é regular o comércio exterior e não apenas arrecadar. Por isso, não se submete ao princípio da noventena, podendo ser alterado imediatamente para atingir seus objetivos." },
+    { question: "A Contribuição de Melhoria é um tributo cuja cobrança se justifica por qual motivo?", options: ["O exercício do poder de polícia.", "A prestação de um serviço público específico e divisível.", "A realização de uma obra pública que resulte em valorização imobiliária.", "O exercício de uma atividade econômica."], answer: 2, feedback: "A **Contribuição de Melhoria** tem como fato gerador a valorização imobiliária decorrente de uma obra pública (ex: pavimentação de uma rua, construção de uma ponte). O tributo é cobrado do proprietário beneficiado para custear parte da obra." },
+    { question: "Segundo o princípio do Não-Confisco (Art. 150, IV, da CF/88), o que é vedado ao Estado?", options: ["A cobrança de imposto sem lei prévia.", "A instituição de tributos com efeito de confisco.", "A cobrança de tributos no mesmo exercício financeiro.", "A instituição de taxas sobre serviços essenciais."], answer: 1, feedback: "O **princípio do Não-Confisco** proíbe que a carga tributária seja tão elevada a ponto de confiscar o patrimônio ou a renda do contribuinte, ferindo o direito à propriedade e o mínimo existencial." },
+    { question: "Qual dos seguintes impostos deve obedecer ao princípio da anterioridade anual e da noventena para ter sua alíquota aumentada?", options: ["Imposto sobre Operações Financeiras (IOF).", "Imposto sobre a Renda (IR).", "Imposto de Importação (II).", "Imposto sobre Produtos Industrializados (IPI)."], answer: 1, feedback: "O **Imposto de Renda (IR)** se submete a ambos os princípios: a anterioridade anual (só pode ser cobrado no ano seguinte à lei) e a noventena (90 dias). As outras opções são impostos com caráter extrafiscal e, por isso, não se submetem a essas regras." },
+    { question: "A capacidade contributiva, prevista no Art. 145, §1º da CF/88, estabelece que a cobrança de impostos deve ser:", options: ["Uniforme para todos os contribuintes.", "Baseada no potencial econômico de cada um.", "Igual para todos os entes federativos.", "Independente do fato gerador."], answer: 1, feedback: "O **princípio da capacidade contributiva** determina que, sempre que possível, os impostos devem ser graduados de acordo com a capacidade econômica do contribuinte, garantindo uma tributação mais justa (ex: alíquotas progressivas do Imposto de Renda)." },
+    { question: "Em relação aos Empréstimos Compulsórios, qual é a sua principal característica?", options: ["São impostos federais.", "São tributos que só podem ser criados por lei complementar.", "São tributos vinculados, com destinação específica.", "São de competência dos estados."], answer: 2, feedback: "Os **Empréstimos Compulsórios**, apesar de serem criados pela União, são tributos **vinculados**. Isso significa que a receita arrecadada tem uma destinação específica para a situação que justificou a sua criação (ex: calamidade pública)." },
+    { question: "A medida provisória pode ser utilizada para instituir ou majorar qual tipo de tributo?", options: ["Imposto sobre Produtos Industrializados (IPI).", "Imposto de Renda (IR).", "Imposto sobre a Propriedade Territorial Rural (ITR).", "Todos os anteriores."], answer: 0, feedback: "Uma medida provisória pode ser utilizada para aumentar tributos que não se submetem à anterioridade, como o **IPI**, que tem caráter extrafiscal. Para os demais impostos, a MP pode instituir ou majorar, mas a cobrança só pode ocorrer após a conversão em lei e o cumprimento das anterioridades." },
+    { question: "Qual é a definição de sanção por ato ilícito, no contexto do Art. 3º do CTN?", options: ["É a punição aplicada ao contribuinte que não paga o tributo.", "É um valor pago por um serviço público prestado.", "É uma prestação pecuniária compulsória que não se enquadra como tributo, como uma multa.", "É o valor que o contribuinte deve para saldar a sua dívida tributária."], answer: 2, feedback: "A **sanção por ato ilícito** é uma penalidade, como uma multa, aplicada em razão de uma conduta proibida. Ela não é um tributo, pois o tributo tem como fato gerador uma situação lícita, como ter renda ou ser proprietário de um veículo." },
+    { question: "O princípio da Legalidade (Art. 150, I, da CF/88) é reforçado pelo conceito de:", options: ["Exclusividade da lei para criar e aumentar tributos.", "Competência exclusiva da União para criar impostos.", "Irretroatividade da lei tributária.", "Uniformidade geográfica."], answer: 0, feedback: "A essência do **princípio da Legalidade** é a necessidade de que uma lei (em sentido estrito, não uma MP ou decreto) seja o instrumento exclusivo para instituir ou majorar um tributo. É uma forma de proteger o contribuinte do arbítrio do Estado." },
+    { question: "O que é um tributo extrafiscal, de acordo com o material?", options: ["Aquele que tem como principal objetivo a arrecadação.", "Aquele que tem como principal objetivo regular o mercado ou o comportamento social.", "Aquele que só pode ser cobrado por lei complementar.", "Aquele que não se submete à noventena."], answer: 1, feedback: "A **extrafiscalidade** é o uso do tributo não apenas para arrecadar, mas para intervir na economia ou no comportamento da sociedade. Exemplos são o IPI e o Imposto de Importação, que podem ter suas alíquotas alteradas para incentivar ou desincentivar certas atividades." },
+    { question: "Qual é a principal função do Código Tributário Nacional (CTN)?", options: ["Criar novos impostos.", "Dispor sobre as normas gerais de direito tributário, como fato gerador, base de cálculo e fiscalização.", "Definir as competências tributárias dos entes federativos.", "Estabelecer as alíquotas de todos os tributos."], answer: 1, feedback: "O **CTN** (Lei nº 5.172/66) é a principal norma de Direito Tributário no Brasil. Ele estabelece as regras gerais, como a definição de tributo, as espécies tributárias, o fato gerador, o crédito tributário, entre outros, que devem ser seguidas por todos os entes federativos." },
+    { question: "A isenção tributária, diferentemente da imunidade, é uma limitação ao poder de tributar que tem origem:", options: ["Constitucional.", "Legal.", "Jurisprudencial.", "Doutrinária."], answer: 1, feedback: "A **isenção** é uma dispensa legal de pagamento de um tributo que já foi regularmente instituído. É uma limitação ao poder de tributar de caráter **legal**, ou seja, prevista em lei, ao contrário da imunidade, que tem origem na Constituição." },
+    { question: "O princípio da Vedação ao Confisco (Art. 150, IV, da CF/88) garante que:", options: ["O Estado não pode cobrar tributos sem lei prévia.", "O contribuinte não pode ser obrigado a pagar tributos que não lhe sejam justos.", "Nenhum tributo pode ser instituído sobre rendimentos inferiores a um salário mínimo.", "A carga tributária não pode ser confiscatória, ferindo o direito à propriedade."], answer: 3, feedback: "A **vedação ao confisco** protege o contribuinte de uma carga tributária excessiva, que poderia comprometer seu patrimônio e sua capacidade de sobrevivência, caracterizando uma apropriação indevida por parte do Estado." },
+    { question: "O que o princípio da Irretroatividade (Art. 150, III, 'a', da CF/88) proíbe?", options: ["A criação de impostos extraordinários em tempo de paz.", "A cobrança de tributo em relação a fatos geradores anteriores à lei que os instituiu ou aumentou.", "A alteração de alíquota por decreto.", "A instituição de taxa sobre serviço indivisível."], answer: 1, feedback: "A **Irretroatividade** é a garantia de que uma lei tributária não pode retroagir para atingir fatos geradores que já ocorreram antes de sua vigência. Isso proporciona segurança jurídica para o contribuinte." },
+    { question: "O princípio da Anterioridade Anual e da Noventena, em conjunto, garantem que:", options: ["O tributo só pode ser cobrado no ano seguinte ao da publicação da lei e após 90 dias.", "O tributo só pode ser cobrado no ano da publicação da lei, mas com 90 dias de antecedência.", "O tributo pode ser cobrado imediatamente, desde que a lei seja publicada no ano anterior.", "Apenas impostos residuais se submetem a essas regras."], answer: 0, feedback: "A combinação dos dois princípios (anterioridade e noventena) exige que a cobrança de um novo tributo ou de um aumento de alíquota só possa ocorrer no ano seguinte à publicação da lei e, no mínimo, 90 dias após essa publicação, prevalecendo o que for mais tardio." },
+    { question: "As contribuições de melhoria são um tipo de tributo que se caracteriza por:", options: ["Obrigação de pagar por serviços públicos específicos.", "Valorização imobiliária em função de obra pública.", "Financiamento da seguridade social.", "Arrecadação de recursos para o combate à inflação."], answer: 1, feedback: "A **Contribuição de Melhoria** tem como fato gerador o benefício ou a valorização econômica de imóveis decorrente da realização de uma obra pública, como a construção de uma avenida ou um sistema de drenagem." },
+    { question: "O princípio da seletividade, aplicado ao IPI e ICMS, implica que as alíquotas desses impostos devem variar de acordo com:", options: ["A renda do contribuinte.", "O tipo de atividade econômica.", "A essencialidade do produto.", "A região do país."], answer: 2, feedback: "A **seletividade** é um princípio que permite que as alíquotas do IPI e do ICMS sejam mais baixas para bens e serviços essenciais (como alimentos e medicamentos) e mais altas para os não essenciais (como bebidas e cigarros)." },
+    { question: "Qual dos seguintes tributos é de competência residual da União e só pode ser criado por lei complementar?", options: ["Imposto sobre Produtos Industrializados (IPI).", "Imposto Extraordinário.", "Empréstimo Compulsório.", "Novo Imposto Federal sobre fato gerador não previsto na CF."], answer: 3, feedback: "A União pode instituir **novos impostos** (competência residual) sobre fatos geradores ou bases de cálculo não previstos na Constituição, desde que o faça por meio de **lei complementar**." },
+    { question: "A imunidade tributária de impostos sobre o patrimônio, a renda e os serviços de templos de qualquer culto tem como objetivo proteger:", options: ["A liberdade de crença e culto.", "O direito à propriedade dos templos.", "O direito de ir e vir.", "A livre concorrência."], answer: 0, feedback: "Essa imunidade, prevista na Constituição Federal, visa garantir a **liberdade de crença e culto**, evitando que a tributação interfira na capacidade das entidades religiosas de exercerem suas atividades." },
+    { question: "O princípio da Pessoalidade (Art. 145, §1º da CF/88) significa que, sempre que possível, os impostos devem ter caráter:", options: ["Comunitário.", "Proporcional.", "Progressivo.", "Seletivo."], answer: 2, feedback: "O princípio da **pessoalidade**, juntamente com a capacidade contributiva, busca a justiça fiscal ao permitir que os impostos sejam **progressivos**, ou seja, as alíquotas aumentam conforme a base de cálculo (renda ou patrimônio) aumenta." },
+    { question: "A competência para instituir impostos sobre grandes fortunas (IGF) é de qual ente federativo?", options: ["União.", "Estados.", "Municípios.", "Distrito Federal."], answer: 0, feedback: "A Constituição Federal (Art. 153, VII) atribui a competência para instituir o **Imposto sobre Grandes Fortunas (IGF)** exclusivamente à **União**." },
+    { question: "Qual o principal objetivo das contribuições sociais, como o INSS?", options: ["Financiar a previdência social e a seguridade social.", "Arrecadar recursos para a saúde pública.", "Custeio de obras públicas.", "Regulamentar o comércio exterior."], answer: 0, feedback: "As **contribuições sociais** são tributos com destinação específica para financiar a **seguridade social** (saúde, previdência e assistência social), garantindo a proteção dos cidadãos em situações de necessidade." },
+    { question: "O Princípio da Legalidade Tributária exige que a instituição ou majoração de um tributo seja feita por:", options: ["Decreto do Poder Executivo.", "Medida Provisória.", "Portaria Ministerial.", "Lei."], answer: 3, feedback: "O **Princípio da Legalidade** (Art. 150, I, CF/88) é categórico ao exigir que a criação ou o aumento de um tributo seja feito exclusivamente por meio de **lei**." },
+    { question: "A cobrança de IPTU, por ser um imposto, é considerada uma receita:", options: ["Originária.", "Derivada.", "Mista.", "Vinculada."], answer: 1, feedback: "A cobrança de tributos como o IPTU é uma **receita derivada**, pois o Estado a obtém por meio do seu poder de império, ou seja, de forma coercitiva, sem que o cidadão possa se opor ao pagamento." },
+    { question: "Qual é o nome do princípio que veda a União de instituir tributos que não sejam uniformes em todo o território nacional?", options: ["Uniformidade Geográfica.", "Legalidade.", "Irretroatividade.", "Noventena."], answer: 0, feedback: "O **princípio da Uniformidade Geográfica** proíbe a União de tratar de forma desigual os entes federativos (Estados, Distrito Federal e Municípios) em matéria tributária, garantindo a coesão federativa." },
+    { question: "A imunidade tributária de impostos sobre o patrimônio, a renda e os serviços dos partidos políticos tem como objetivo garantir:", options: ["A liberdade de associação e a pluralidade política.", "A propriedade dos bens dos partidos.", "O direito à informação.", "A isenção fiscal."], answer: 0, feedback: "Essa imunidade constitucional protege o livre funcionamento das instituições democráticas, assegurando a **liberdade de associação e o pluralismo político**." },
+    { question: "A principal diferença entre Imposto e Contribuição de Melhoria é que a primeira não é vinculada a uma atividade estatal, enquanto a segunda é vinculada a:", options: ["O exercício do poder de polícia.", "A prestação de um serviço específico.", "A realização de uma obra pública que gere valorização.", "O financiamento da seguridade social."], answer: 2, feedback: "A **Contribuição de Melhoria** se distingue dos demais tributos por ser especificamente vinculada à realização de uma obra pública que resulte em valorização do imóvel do contribuinte." },
+    { question: "Qual o princípio que veda a cobrança de tributo no mesmo exercício financeiro em que foi publicada a lei que o instituiu ou aumentou?", options: ["Anterioridade.", "Legalidade.", "Noventena.", "Irretroatividade."], answer: 0, feedback: "O **Princípio da Anterioridade** (Art. 150, III, 'b', CF/88) garante que o contribuinte não será pego de surpresa, pois a cobrança só pode ocorrer no ano seguinte." },
+    { question: "A regra da Noventena (Art. 150, III, 'c', CF/88) estabelece um prazo de:", options: ["60 dias.", "90 dias.", "180 dias.", "1 ano."], answer: 1, feedback: "A **Noventena** exige um intervalo mínimo de **90 dias** entre a publicação da lei que institui ou aumenta um tributo e a sua efetiva cobrança, assegurando um tempo para que os contribuintes se preparem." },
+    { question: "Qual dos seguintes impostos se submete apenas à anterioridade nonagesimal (noventena) e não à anterioridade anual?", options: ["Imposto de Renda (IR).", "Imposto sobre a Propriedade Territorial Rural (ITR).", "Imposto sobre Produtos Industrializados (IPI).", "Imposto sobre Transmissão Causa Mortis e Doação (ITCMD)."], answer: 2, feedback: "O **IPI** é um dos impostos que, por seu caráter extrafiscal, é uma exceção à anterioridade anual, submetendo-se apenas à noventena." },
+    { question: "O que o princípio da isonomia tributária (ou igualdade) determina?", options: ["Que todos os contribuintes devem pagar a mesma quantidade de tributos.", "Que a União, Estados e Municípios devem ter a mesma competência tributária.", "Que os tributos devem ser graduados de acordo com a capacidade contributiva.", "Que a cobrança de tributos deve ser igual para todos que se encontram na mesma situação, proibindo o tratamento desigual."], answer: 3, feedback: "O **princípio da isonomia** proíbe a criação de leis tributárias que estabeleçam tratamento desigual para contribuintes que se encontram na mesma situação, garantindo a igualdade de tratamento perante a lei." },
+    { question: "Qual tipo de tributo é cobrado por um serviço público específico e divisível, como a taxa de coleta de lixo?", options: ["Imposto.", "Contribuição de Melhoria.", "Empréstimo Compulsório.", "Taxa."], answer: 3, feedback: "A **Taxa** é o tributo que tem como fato gerador a utilização, efetiva ou potencial, de serviços públicos específicos e divisíveis, como a coleta de lixo, ou o exercício do poder de polícia." },
+    { question: "As imunidades tributárias são:", options: ["Dispensas de pagamento de tributos previstas em lei ordinária.", "Limitações ao poder de tributar previstas na Constituição.", "Garantias de que a carga tributária não será confiscatória.", "Normas que permitem a retroatividade da lei tributária."], answer: 1, feedback: "As **imunidades** são limitações constitucionais ao poder de tributar, que impedem a criação de um tributo sobre determinadas pessoas, patrimônios, rendas ou serviços." },
+    { question: "O Simples Nacional é um regime especial de tributação. Qual sua principal característica?", options: ["É de competência exclusiva da União.", "É um sistema de cobrança simplificado, aplicável a micro e pequenas empresas.", "É um tributo de natureza extrafiscal.", "É um empréstimo compulsório para pequenos negócios."], answer: 1, feedback: "O **Simples Nacional** é um regime tributário simplificado e unificado, que concentra a cobrança de vários tributos federais, estaduais e municipais em um único documento de arrecadação, beneficiando micro e pequenas empresas." },
+    { question: "Qual é o nome do princípio que garante que a lei tributária deve ter uma base de cálculo e um fato gerador claramente definidos?", options: ["Anterioridade.", "Seletividade.", "Não-cumulatividade.", "Tipicidade."], answer: 3, feedback: "O **princípio da tipicidade** exige que a lei tributária descreva de forma precisa e completa o fato gerador, a base de cálculo, a alíquota e o sujeito passivo, de forma a evitar ambiguidades e garantir a segurança jurídica." },
+    { question: "O Imposto sobre a Propriedade de Veículos Automotores (IPVA) é um exemplo de imposto:", options: ["Vinculado.", "Pessoal.", "Não vinculado.", "Residual."], answer: 2, feedback: "O **IPVA** é um **imposto não vinculado**, pois seu fato gerador é a propriedade de um veículo, e a sua arrecadação não é destinada a custear um serviço público específico relacionado ao contribuinte." },
+    { question: "Em um cenário de guerra externa, a União pode instituir:", options: ["Imposto de Importação Extraordinário.", "Empréstimo Compulsório de Guerra.", "Ambos.", "Nenhum dos anteriores."], answer: 2, feedback: "A União pode instituir tanto um **Imposto Extraordinário de Guerra** (Art. 154, II, CF/88) quanto um **Empréstimo Compulsório** para custear despesas de guerra (Art. 148, I, CF/88), ambos sem obedecer ao princípio da anterioridade." },
+    { question: "O que o princípio da não-cumulatividade, aplicável ao IPI e ao ICMS, permite?", options: ["A cobrança de imposto sem lei prévia.", "O aumento de alíquotas por decreto.", "A compensação do imposto cobrado nas operações anteriores.", "A isenção de impostos sobre produtos essenciais."], answer: 2, feedback: "O **princípio da não-cumulatividade** permite que o contribuinte 'abata' o imposto pago em etapas anteriores da cadeia produtiva ou de comercialização, evitando que o tributo seja cobrado várias vezes sobre a mesma base de cálculo." },
+    { question: "A cobrança de uma taxa por um município para o serviço de fiscalização de uma empresa é um exemplo de utilização do poder de:", options: ["Polícia.", "Arrecadação.", "Intervenção no domínio econômico.", "Planejamento."], answer: 0, feedback: "A taxa cobrada pela fiscalização de atividades é um exemplo de tributo gerado pelo exercício do **poder de polícia**, que é a capacidade do Estado de restringir ou condicionar o uso de bens e atividades privadas em favor do interesse público." },
+    { question: "Qual é a principal função do princípio da capacidade contributiva?", options: ["Aumentar a arrecadação.", "Garantir que a cobrança de impostos seja justa.", "Proteger o contribuinte da noventena.", "Evitar a bitributação."], answer: 1, feedback: "O **princípio da capacidade contributiva** é a base para um sistema tributário justo, pois busca adequar a carga tributária à capacidade de pagamento de cada contribuinte, garantindo que quem tem mais pague proporcionalmente mais." },
+    { question: "A imunidade tributária de impostos sobre patrimônio, renda e serviços de instituições de educação sem fins lucrativos tem como objetivo proteger:", options: ["A liberdade de ensino.", "O direito à saúde.", "O direito de propriedade das instituições.", "O direito de voto."], answer: 0, feedback: "A imunidade para instituições de educação sem fins lucrativos visa proteger o **direito à educação**, facilitando a atuação dessas entidades e tornando o ensino mais acessível à população." },
+    { question: "Em qual cenário a União pode instituir um empréstimo compulsório?", options: ["Apenas em caso de calamidade pública ou guerra externa.", "Em qualquer situação de emergência.", "Apenas para financiar obras públicas.", "Apenas por lei ordinária e com aprovação do Senado."], answer: 0, feedback: "Os **empréstimos compulsórios** são tributos especiais e só podem ser instituídos pela União em situações de extrema excepcionalidade, como **calamidade pública ou guerra externa**, ou para investimentos públicos urgentes." },
+    { question: "Qual é o principal objetivo da imunidade de impostos sobre livros, jornais e periódicos?", options: ["Incentivar a leitura.", "Promover a liberdade de imprensa e de informação.", "Reduzir o preço do papel.", "Evitar a concorrência desleal."], answer: 1, feedback: "A **imunidade de livros, jornais e periódicos** é uma garantia constitucional que busca proteger a **liberdade de imprensa e a livre circulação de ideias**, consideradas pilares da democracia." },
+    { question: "O princípio da Irretroatividade (Art. 150, III, 'a', da CF/88) garante a segurança jurídica do contribuinte ao proibir:", options: ["A cobrança de tributo no mesmo ano da publicação da lei.", "O confisco de bens por meio de tributos.", "A cobrança de tributos sobre fatos geradores passados.", "A criação de taxa para serviços essenciais."], answer: 2, feedback: "A **Irretroatividade** é a garantia de que uma nova lei tributária não irá retroagir para cobrar tributos sobre eventos que já aconteceram antes de sua vigência, preservando a previsibilidade e a segurança jurídica." },
+    { question: "A alíquota do Imposto sobre Produtos Industrializados (IPI) varia conforme o princípio da:", options: ["Anterioridade.", "Seletividade.", "Noventena.", "Não-cumulatividade."], answer: 1, feedback: "A alíquota do **IPI** é regida pelo **princípio da seletividade**, variando de acordo com a essencialidade do produto, com alíquotas maiores para produtos não essenciais e menores para os essenciais." },
+    { question: "O que o princípio da Vedação à Bitributação busca evitar?", options: ["Que um mesmo ente federativo cobre mais de um tributo sobre o mesmo fato gerador.", "Que o contribuinte pague mais de um imposto sobre a mesma renda.", "Que dois ou mais entes federativos cobrem tributos sobre o mesmo fato gerador.", "Que a União cobre impostos estaduais."], answer: 2, feedback: "A **Vedação à Bitributação** é um princípio implícito que busca evitar que entes federativos diferentes (ex: União e um Estado) cobrem tributos sobre o mesmo fato gerador, o que seria uma violação ao pacto federativo e uma sobrecarga ao contribuinte." },
+    { question: "A principal diferença entre receita originária e receita derivada é:", options: ["A origem dos recursos, sendo uma do patrimônio do Estado e a outra do poder de império.", "Uma é de competência federal e a outra, estadual.", "Uma é de impostos e a outra, de taxas.", "A destinação dos recursos arrecadados."], answer: 0, feedback: "A **receita originária** vem da exploração do próprio patrimônio do Estado (ex: aluguéis de imóveis), enquanto a **receita derivada** é obtida por meio de sua soberania, como a cobrança de tributos e multas." },
+    { question: "O que o princípio da Legalidade (Art. 150, I, CF/88) estabelece em relação aos tributos?", options: ["Que eles devem ser cobrados com 90 dias de antecedência.", "Que eles não podem ter alíquotas progressivas.", "Que eles só podem ser instituídos ou aumentados por meio de lei.", "Que eles devem ter sua alíquota alterada por decreto."], answer: 2, feedback: "O **princípio da Legalidade** é a garantia de que a tributação é uma prerrogativa do legislador, e que nenhum tributo pode ser criado ou majorado sem lei que o estabeleça." },
+    { question: "A imunidade tributária de impostos sobre patrimônio, renda e serviços de entidades sindicais dos trabalhadores visa proteger:", options: ["O direito à livre associação sindical.", "A propriedade dos sindicatos.", "A liberdade de imprensa.", "O direito à saúde dos trabalhadores."], answer: 0, feedback: "Essa imunidade constitucional protege o livre funcionamento dos sindicatos de trabalhadores, garantindo a **liberdade de associação sindical** e a defesa dos direitos da categoria." },
+    { question: "Qual é a principal distinção entre Imposto sobre Produtos Industrializados (IPI) e Imposto sobre a Propriedade de Veículos Automotores (IPVA)?", options: ["O IPI é federal e o IPVA é estadual.", "O IPI é fiscal e o IPVA é extrafiscal.", "O IPI é sobre a renda e o IPVA é sobre o patrimônio.", "O IPI não se submete à noventena e o IPVA sim."], answer: 0, feedback: "O **IPI** é um imposto de competência da **União**, enquanto o **IPVA** é um imposto de competência dos **Estados** e do Distrito Federal." },
+    { question: "O princípio da capacidade contributiva se aplica principalmente aos impostos:", options: ["Vinculados.", "Não vinculados.", "Extraordinários.", "Residuais."], answer: 1, feedback: "O **princípio da capacidade contributiva** se aplica principalmente aos **impostos não vinculados** (como IR, IPTU, IPVA), pois estes têm como fato gerador a manifestação de riqueza do contribuinte, permitindo a graduação da alíquota." },
+    { question: "Qual é a principal função do princípio da Pessoalidade?", options: ["Uniformizar a tributação entre os estados.", "Graduar o imposto de acordo com a capacidade econômica do contribuinte.", "Garantir a não-cumulatividade.", "Evitar o confisco."], answer: 1, feedback: "A **Pessoalidade**, prevista no Art. 145, §1º, da CF/88, complementa a capacidade contributiva ao exigir que, sempre que possível, os impostos tenham alíquotas que variem de acordo com a situação pessoal do contribuinte, como sua renda e despesas." },
+    { question: "A instituição de um novo imposto por lei complementar, sobre um fato gerador não previsto na Constituição, é um exemplo de:", options: ["Competência comum.", "Competência residual.", "Competência cumulativa.", "Competência extraordinária."], answer: 1, feedback: "A **competência residual** da União (Art. 154, I, da CF/88) permite a criação de novos impostos sobre fatos geradores e bases de cálculo não previstos expressamente na Constituição Federal, mas exige o uso de **lei complementar**." }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let userAnswers = {};
+  
+  const progressText = document.getElementById("progress-text");
+  const statusText = document.getElementById("status-text");
+  const questionText = document.getElementById("question-text");
+  const optionsContainer = document.getElementById("options-container");
+  const feedbackBox = document.getElementById("feedback-box");
+  const feedbackText = document.getElementById("feedback-text");
+  const prevButton = document.getElementById("prev-button");
+  const nextButton = document.getElementById("next-button");
+  const finalResult = document.getElementById("final-result");
+  const finalResultText = document.getElementById("final-result-text");
+  const restartButton = document.getElementById("restart-button");
+
+  function renderQuestion() {
+    if (currentQuestionIndex >= questions.length) {
+      showFinalResult();
+      return;
+    }
+
+    const q = questions[currentQuestionIndex];
+    
+    // Esconde o resultado final e o feedback
+    finalResult.classList.add('hidden');
+    feedbackBox.style.display = 'none';
+
+    // Atualiza o contador de questões
+    progressText.textContent = `Questão ${currentQuestionIndex + 1} de ${questions.length}`;
+    
+    // Atualiza o texto da questão
+    questionText.textContent = q.question;
+    optionsContainer.innerHTML = '';
+    
+    // Cria os botões de opção
+    q.options.forEach((option, index) => {
+      const button = document.createElement('button');
+      button.textContent = option;
+      button.classList.add('px-4', 'py-2', 'rounded-md');
+      button.onclick = () => handleAnswer(index);
+      optionsContainer.appendChild(button);
+      
+      // Se a questão já foi respondida, mostra a resposta
+      if (userAnswers[currentQuestionIndex] !== undefined) {
+        button.disabled = true;
+        if (index === q.answer) {
+          button.classList.add('correct');
+        }
+        if (userAnswers[currentQuestionIndex] === index) {
+          if (index !== q.answer) {
+            button.classList.add('incorrect');
+          }
+        }
+        feedbackBox.style.display = 'block';
+        feedbackBox.classList.remove('incorrect');
+        feedbackBox.classList.remove('correct');
+        feedbackText.innerHTML = `**Justificativa:** ${q.feedback}`;
+      }
+    });
+
+    updateNavigationButtons();
+  }
+
+  function handleAnswer(selectedIndex) {
+    if (userAnswers[currentQuestionIndex] !== undefined) {
+      return;
+    }
+    
+    userAnswers[currentQuestionIndex] = selectedIndex;
+    const q = questions[currentQuestionIndex];
+    const optionButtons = optionsContainer.querySelectorAll('button');
+
+    optionButtons.forEach((button, index) => {
+      button.disabled = true;
+      if (index === q.answer) {
+        button.classList.add('correct');
+      }
+      if (index === selectedIndex && index !== q.answer) {
+        button.classList.add('incorrect');
+      }
+    });
+    
+    feedbackBox.style.display = 'block';
+    
+    if (selectedIndex === q.answer) {
+      feedbackBox.classList.remove('incorrect');
+      feedbackBox.classList.add('correct');
+      feedbackText.innerHTML = `**Justificativa:** ${q.feedback}`;
+      score++;
+    } else {
+      feedbackBox.classList.add('incorrect');
+      feedbackBox.classList.remove('correct');
+      feedbackText.innerHTML = `**Justificativa:** ${q.feedback}`;
+    }
+    
+    updateStatusText();
+    updateNavigationButtons();
+  }
+  
+  function updateStatusText() {
+    const totalAnswered = Object.keys(userAnswers).length;
+    const remaining = questions.length - totalAnswered;
+    statusText.textContent = `${totalAnswered} respondidas, ${remaining} restantes`;
+  }
+
+  function updateNavigationButtons() {
+    prevButton.disabled = currentQuestionIndex === 0;
+    nextButton.textContent = currentQuestionIndex === questions.length - 1 ? 'Finalizar' : 'Avançar';
+  }
+
+  function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      renderQuestion();
+    } else {
+      showFinalResult();
+    }
+  }
+
+  function prevQuestion() {
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+
+  function showFinalResult() {
+    document.getElementById('quiz-content').classList.add('hidden');
+    finalResult.classList.remove('hidden');
+    finalResultText.textContent = `Seu resultado: ${score} de ${questions.length} questões corretas.`;
+    prevButton.style.display = 'none';
+    nextButton.style.display = 'none';
+    progressText.style.display = 'none';
+    statusText.style.display = 'none';
+  }
+
+  function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = {};
+    document.getElementById('quiz-content').classList.remove('hidden');
+    finalResult.classList.add('hidden');
+    prevButton.style.display = 'flex';
+    nextButton.style.display = 'flex';
+    progressText.style.display = 'block';
+    statusText.style.display = 'block';
+    updateStatusText();
+    renderQuestion();
+  }
+
+  prevButton.addEventListener('click', prevQuestion);
+  nextButton.addEventListener('click', nextQuestion);
+  restartButton.addEventListener('click', restartQuiz);
+  
+  // Initial render
+  renderQuestion();
+  updateStatusText();
+</script>
+
+</body>
+</html>
