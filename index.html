@@ -88,6 +88,11 @@
       color: #065f46;
       display: none; /* Hidden by default */
     }
+    .feedback-box.incorrect-feedback {
+      background-color: #fef2f2;
+      border-color: #fee2e2;
+      color: #b91c1c;
+    }
     .navigation-buttons {
       display: flex;
       justify-content: space-between;
@@ -348,9 +353,19 @@
       }
     });
     
-    // Mostra a caixa de feedback
+    // Mostra a caixa de feedback e ajusta a cor
     feedbackBox.style.display = 'block';
-    feedbackText.innerHTML = `<strong>Justificativa:</strong> ${q.feedback}`;
+    feedbackBox.classList.remove('incorrect-feedback');
+
+    let feedbackHeader;
+    if (selectedOption === q.answer) {
+      feedbackHeader = '<p class="font-bold text-lg mb-2">Certo!</p>';
+    } else {
+      feedbackBox.classList.add('incorrect-feedback');
+      feedbackHeader = '<p class="font-bold text-lg mb-2">Errado!</p>';
+    }
+
+    feedbackText.innerHTML = `${feedbackHeader}<strong>Justificativa:</strong> ${q.feedback}`;
   }
   
   function updateStatusText() {
